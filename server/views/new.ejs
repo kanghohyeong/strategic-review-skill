@@ -1,0 +1,33 @@
+<%- include('layouts/head', { title: '새 보고서 등록' }) %>
+
+    <div class="page-header">
+      <h2>새 보고서 등록</h2>
+      <a href="/" class="btn btn-secondary">목록으로</a>
+    </div>
+
+    <% if (error) { %>
+    <div class="alert alert-error"><%= error %></div>
+    <% } %>
+
+    <div class="card">
+      <form method="POST" action="/reports">
+        <div class="form-group">
+          <label for="name">보고서 이름 *</label>
+          <input type="text" id="name" name="name" required placeholder="예: Q1 마케팅 전략 검토">
+        </div>
+        <div class="form-group">
+          <label for="objective">목표 *</label>
+          <textarea id="objective" name="objective" required placeholder="이 보고서의 목표를 입력하세요"></textarea>
+        </div>
+        <div class="form-group">
+          <label for="constraints">제약 조건</label>
+          <textarea id="constraints" name="constraints" placeholder="제약 조건이 있다면 입력하세요"></textarea>
+        </div>
+        <div style="display:flex;gap:12px;">
+          <button type="submit" class="btn btn-primary">보고서 생성</button>
+          <a href="/" class="btn btn-secondary">취소</a>
+        </div>
+      </form>
+    </div>
+
+<%- include('layouts/foot') %>

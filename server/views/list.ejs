@@ -1,0 +1,46 @@
+<%- include('layouts/head', { title: '보고서 목록' }) %>
+
+    <div class="page-header">
+      <h2>보고서 목록 <small style="font-size:0.8em;color:#888;">(총 <%= totalCount %>건)</small></h2>
+      <a href="/reports/new" class="btn btn-primary">새 보고서</a>
+    </div>
+
+    <% if (groups.length === 0) { %>
+    <div class="empty-state">
+      <p>등록된 보고서가 없습니다.</p>
+      <a href="/reports/new" class="btn btn-primary">첫 보고서 등록하기</a>
+    </div>
+    <% } else { %>
+      <% for (const group of groups) { %>
+        <% const f = group.latestFile %>
+        <% const versionCount = group.allFiles.length %>
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <div class="card-title"><a href="/reports/<%= f.filename %>"><%= f.name || '(이름 없음)' %></a></div>
+              <div class="card-meta">
+                <%= f.prefix.replace('_', ' ') %> &middot; v<%= f.version %> (총 <%= versionCount %>개 버전)
+              </div>
+            </div>
+            <%- include('partials/badge', { status: f.status }) %>
+          </div>
+          <div style="font-size:0.9rem;color:#555;margin-top:8px;"><%= f.objective.slice(0, 120) %><%= f.objective.length > 120 ? '...' : '' %></div>
+        </div>
+      <% } %>
+    <% } %>
+
+    <% if (totalPages > 1) { %>
+    <div class="pagination">
+      <% if (currentPage > 1) { %><a href="/?page=<%= currentPage - 1 %>">이전</a><% } %>
+      <% for (let i = 1; i <= totalPages; i++) { %>
+        <% if (i === currentPage) { %>
+          <span class="active"><%= i %></span>
+        <% } else { %>
+          <a href="/?page=<%= i %>"><%= i %></a>
+        <% } %>
+      <% } %>
+      <% if (currentPage < totalPages) { %><a href="/?page=<%= currentPage + 1 %>">다음</a><% } %>
+    </div>
+    <% } %>
+
+<%- include('layouts/foot') %>

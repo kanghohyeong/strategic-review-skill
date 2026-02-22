@@ -1,0 +1,49 @@
+<%- include('layouts/head', { title: file.name || '보고서 상세' }) %>
+
+    <div class="page-header">
+      <h2><%= file.name || '(이름 없음)' %></h2>
+      <a href="/" class="btn btn-secondary">목록으로</a>
+    </div>
+
+    <table class="meta-table">
+      <tr><th>파일명</th><td><code><%= file.filename %></code></td></tr>
+      <tr><th>상태</th><td><%- include('partials/badge', { status: file.status }) %></td></tr>
+      <tr><th>목표</th><td><%= file.objective %></td></tr>
+      <tr><th>제약 조건</th><td><%= file.constraints || '-' %></td></tr>
+    </table>
+
+    <% if (file.reviewComment) { %>
+    <div class="comment-box"><strong>검토 의견:</strong> <%= file.reviewComment %></div>
+    <% } %>
+
+    <div style="margin-bottom:12px;">
+      <strong style="font-size:0.9rem;color:#555;">버전 이력</strong>
+      <div class="version-nav" style="margin-top:8px;">
+        <% for (const f of group.allFiles) { %>
+          <a href="/reports/<%= f.filename %>" class="version-chip <%= f.filename === file.filename ? 'active' : '' %>">v<%= f.version %> <%- include('partials/badge', { status: f.status }) %></a>
+        <% } %>
+      </div>
+    </div>
+
+    <div class="markdown-body"><%- renderedContent %></div>
+
+    <% if (file.status === 'submit') { %>
+    <div class="review-section">
+      <h3>보고서 검토</h3>
+      <div class="review-actions">
+        <form method="POST" action="/reports/<%= file.filename %>/approve" style="display:inline;">
+          <button type="submit" class="btn btn-success" onclick="return confirm('승인하시겠습니까?')">승인</button>
+        </form>
+        <div style="flex:1;min-width:280px;">
+          <form method="POST" action="/reports/<%= file.filename %>/reject">
+            <div class="form-group" style="margin-bottom:8px;">
+              <input type="text" name="comment" placeholder="반려 사유를 입력하세요" required style="width:100%;">
+            </div>
+            <button type="submit" class="btn btn-danger">반려</button>
+          </form>
+        </div>
+      </div>
+    </div>
+    <% } %>
+
+<%- include('layouts/foot') %>

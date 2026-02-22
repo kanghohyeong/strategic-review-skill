@@ -1,0 +1,9 @@
+<%- include('layouts/head', { title: code + ' 오류' }) %>
+
+    <div class="error-page">
+      <h2><%= code %> 오류</h2>
+      <p><%= message %></p>
+      <a href="/" class="btn btn-primary">목록으로 돌아가기</a>
+    </div>
+
+<%- include('layouts/foot') %>

@@ -1,4 +1,5 @@
 import { Router, Request, Response } from 'express'
+import { marked } from 'marked'
 import {
   getPaginatedGroups,
   getReportByFilename,
@@ -7,28 +8,22 @@ import {
   approveReport,
   rejectReport,
 } from './reportService'
-import {
-  renderListPage,
-  renderNewReportForm,
-  renderDetailPage,
-  renderErrorPage,
-} from './templates'
 
 export const router = Router()
 
 function handleError(res: Response, err: unknown): void {
   if (err instanceof Error) {
     if (err.message === 'Invalid filename' || err.message.startsWith('ENOENT')) {
-      res.status(404).send(renderErrorPage('보고서를 찾을 수 없습니다.', 404))
+      res.status(404).render('error', { message: '보고서를 찾을 수 없습니다.', code: 404 })
     } else if ((err as NodeJS.ErrnoException).code === 'ENOENT') {
-      res.status(404).send(renderErrorPage('보고서를 찾을 수 없습니다.', 404))
+      res.status(404).render('error', { message: '보고서를 찾을 수 없습니다.', code: 404 })
     } else {
       console.error(err)
-      res.status(500).send(renderErrorPage('서버 오류가 발생했습니다.', 500))
+      res.status(500).render('error', { message: '서버 오류가 발생했습니다.', code: 500 })
     }
   } else {
     console.error(err)
-    res.status(500).send(renderErrorPage('서버 오류가 발생했습니다.', 500))
+    res.status(500).render('error', { message: '서버 오류가 발생했습니다.', code: 500 })
   }
 }
 
@@ -37,7 +32,7 @@ router.get('/', (req: Request, res: Response) => {
   try {
     const page = parseInt(String(req.query.page ?? '1'), 10) || 1
     const data = getPaginatedGroups(page)
-    res.send(renderListPage(data))
+    res.render('list', data)
   } catch (err) {
     handleError(res, err)
   }
@@ -45,7 +40,7 @@ router.get('/', (req: Request, res: Response) => {
 
 // GET /reports/new — 등록 폼
 router.get('/reports/new', (_req: Request, res: Response) => {
-  res.send(renderNewReportForm())
+  res.render('new', { error: undefined })
 })
 
 // POST /reports — 보고서 생성
@@ -56,11 +51,11 @@ router.post('/reports', (req: Request, res: Response) => {
     const constraints = String(req.body.constraints ?? '').trim()
 
     if (!name) {
-      res.send(renderNewReportForm('보고서 이름은 필수입니다.'))
+      res.render('new', { error: '보고서 이름은 필수입니다.' })
       return
     }
     if (!objective) {
-      res.send(renderNewReportForm('목표는 필수입니다.'))
+      res.render('new', { error: '목표는 필수입니다.' })
       return
     }
 
@@ -72,12 +67,15 @@ router.post('/reports', (req: Request, res: Response) => {
 })
 
 // GET /reports/:filename — 상세
-router.get('/reports/:filename', (req: Request, res: Response) => {
+router.get('/reports/:filename', async (req: Request, res: Response) => {
   try {
     const { filename } = req.params
     const file = getReportByFilename(filename)
     const group = getGroupByPrefix(file.prefix)
-    res.send(renderDetailPage(file, group))
+    const renderedContent = file.content
+      ? String(await marked.parse(file.content))
+      : '<p style="color:#888">본문 내용이 없습니다.</p>'
+    res.render('detail', { file, group, renderedContent })
   } catch (err) {
     handleError(res, err)
   }
@@ -95,7 +93,7 @@ router.post('/reports/:filename/approve', (req: Request, res: Response) => {
 })
 
 // POST /reports/:filename/reject — 반려
-router.post('/reports/:filename/reject', (req: Request, res: Response) => {
+router.post('/reports/:filename/reject', async (req: Request, res: Response) => {
   try {
     const { filename } = req.params
     const comment = String(req.body.comment ?? '').trim()
@@ -103,7 +101,10 @@ router.post('/reports/:filename/reject', (req: Request, res: Response) => {
     if (!comment) {
       const file = getReportByFilename(filename)
       const group = getGroupByPrefix(file.prefix)
-      res.send(renderDetailPage(file, group))
+      const renderedContent = file.content
+        ? String(await marked.parse(file.content))
+        : '<p style="color:#888">본문 내용이 없습니다.</p>'
+      res.render('detail', { file, group, renderedContent })
       return
     }
 
