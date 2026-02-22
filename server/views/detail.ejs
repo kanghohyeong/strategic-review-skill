@@ -1,23 +1,39 @@
-<%- include('layouts/head', { title: file.name || '보고서 상세' }) %>
+<%- include('layouts/head', { title: file.name || 'Report Detail' }) %>
 
     <div class="page-header">
-      <h2><%= file.name || '(이름 없음)' %></h2>
-      <a href="/" class="btn btn-secondary">목록으로</a>
+      <h2><%= file.name || '(Unnamed)' %></h2>
+      <a href="/" class="btn btn-secondary">Back to List</a>
     </div>
 
     <table class="meta-table">
-      <tr><th>파일명</th><td><code><%= file.filename %></code></td></tr>
-      <tr><th>상태</th><td><%- include('partials/badge', { status: file.status }) %></td></tr>
-      <tr><th>목표</th><td><%= file.objective %></td></tr>
-      <tr><th>제약 조건</th><td><%= file.constraints || '-' %></td></tr>
+      <tr><th>Filename</th><td><code><%= file.filename %></code></td></tr>
+      <tr><th>Status</th><td><%- include('partials/badge', { status: file.status }) %></td></tr>
+      <tr><th>Objective</th><td><%= file.objective %></td></tr>
+      <tr><th>Constraints</th><td><%= file.constraints || '-' %></td></tr>
     </table>
 
     <% if (file.reviewComment) { %>
-    <div class="comment-box"><strong>검토 의견:</strong> <%= file.reviewComment %></div>
+    <div class="comment-box"><strong>Review Comment:</strong> <%= file.reviewComment %></div>
+    <% } %>
+
+    <% if (file.status === 'init' || file.status === 'revision') { %>
+    <div class="command-guide">
+      <p class="command-guide-text">
+        <% if (file.status === 'init') { %>
+        To request a strategy review from the agent, enter the command below
+        <% } else { %>
+        To request a strategy revision from the agent, enter the command below
+        <% } %>
+      </p>
+      <div class="command-snippet">
+        <code id="cmd-text">/strategic-review-interactive <%= file.filename %></code>
+        <button class="btn-copy" onclick="copyCommand()">Copy</button>
+      </div>
+    </div>
     <% } %>
 
     <div style="margin-bottom:12px;">
-      <strong style="font-size:0.9rem;color:#555;">버전 이력</strong>
+      <strong style="font-size:0.9rem;color:#555;">Version History</strong>
       <div class="version-nav" style="margin-top:8px;">
         <% for (const f of group.allFiles) { %>
           <a href="/reports/<%= f.filename %>" class="version-chip <%= f.filename === file.filename ? 'active' : '' %>">v<%= f.version %> <%- include('partials/badge', { status: f.status }) %></a>
@@ -28,22 +44,34 @@
     <div class="markdown-body"><%- renderedContent %></div>
 
     <% if (file.status === 'submit') { %>
-    <div class="review-section">
-      <h3>보고서 검토</h3>
-      <div class="review-actions">
-        <form method="POST" action="/reports/<%= file.filename %>/approve" style="display:inline;">
-          <button type="submit" class="btn btn-success" onclick="return confirm('승인하시겠습니까?')">승인</button>
-        </form>
-        <div style="flex:1;min-width:280px;">
-          <form method="POST" action="/reports/<%= file.filename %>/reject">
-            <div class="form-group" style="margin-bottom:8px;">
-              <input type="text" name="comment" placeholder="반려 사유를 입력하세요" required style="width:100%;">
-            </div>
-            <button type="submit" class="btn btn-danger">반려</button>
+    <div class="review-bar">
+      <div class="review-bar-inner">
+        <h3>Review</h3>
+        <div class="review-actions">
+          <form method="POST" action="/reports/<%= file.filename %>/approve" style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+            <input type="text" name="comment" placeholder="Approval comment (optional)" style="width:260px;">
+            <button type="submit" class="btn btn-success" onclick="return confirm('Confirm approval?')">Approve</button>
+          </form>
+          <form method="POST" action="/reports/<%= file.filename %>/reject" style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+            <input type="text" name="comment" placeholder="Enter rejection reason" required style="width:260px;">
+            <button type="submit" class="btn btn-danger">Reject</button>
           </form>
         </div>
       </div>
     </div>
+    <script>document.body.classList.add('body-has-review-bar');</script>
     <% } %>
+
+    <script>
+    function copyCommand() {
+      const text = document.getElementById('cmd-text').textContent;
+      navigator.clipboard.writeText(text).then(function() {
+        const btn = document.querySelector('.btn-copy');
+        const original = btn.textContent;
+        btn.textContent = 'Copied!';
+        setTimeout(function() { btn.textContent = original; }, 2000);
+      });
+    }
+    </script>
 
 <%- include('layouts/foot') %>

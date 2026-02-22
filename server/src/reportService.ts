@@ -141,7 +141,7 @@ export function createReport(params: {
   return filename
 }
 
-export function approveReport(filename: string): void {
+export function approveReport(filename: string, comment?: string): void {
   if (!isValidFilename(filename)) throw new Error('Invalid filename')
 
   const filePath = path.join(STRATEGIC_DIR, filename)
@@ -149,7 +149,11 @@ export function approveReport(filename: string): void {
   const parsed = matter(raw)
 
   parsed.data.status = 'approve'
-  delete parsed.data['review-comment']
+  if (comment) {
+    parsed.data['review-comment'] = comment
+  } else {
+    delete parsed.data['review-comment']
+  }
 
   const updated = matter.stringify(parsed.content, parsed.data)
   fs.writeFileSync(filePath, updated, 'utf-8')

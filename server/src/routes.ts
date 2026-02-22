@@ -14,16 +14,16 @@ export const router = Router()
 function handleError(res: Response, err: unknown): void {
   if (err instanceof Error) {
     if (err.message === 'Invalid filename' || err.message.startsWith('ENOENT')) {
-      res.status(404).render('error', { message: '보고서를 찾을 수 없습니다.', code: 404 })
+      res.status(404).render('error', { message: 'Report not found.', code: 404 })
     } else if ((err as NodeJS.ErrnoException).code === 'ENOENT') {
-      res.status(404).render('error', { message: '보고서를 찾을 수 없습니다.', code: 404 })
+      res.status(404).render('error', { message: 'Report not found.', code: 404 })
     } else {
       console.error(err)
-      res.status(500).render('error', { message: '서버 오류가 발생했습니다.', code: 500 })
+      res.status(500).render('error', { message: 'Internal server error.', code: 500 })
     }
   } else {
     console.error(err)
-    res.status(500).render('error', { message: '서버 오류가 발생했습니다.', code: 500 })
+    res.status(500).render('error', { message: 'Internal server error.', code: 500 })
   }
 }
 
@@ -51,11 +51,11 @@ router.post('/reports', (req: Request, res: Response) => {
     const constraints = String(req.body.constraints ?? '').trim()
 
     if (!name) {
-      res.render('new', { error: '보고서 이름은 필수입니다.' })
+      res.render('new', { error: 'Report name is required.' })
       return
     }
     if (!objective) {
-      res.render('new', { error: '목표는 필수입니다.' })
+      res.render('new', { error: 'Objective is required.' })
       return
     }
 
@@ -74,7 +74,7 @@ router.get('/reports/:filename', async (req: Request, res: Response) => {
     const group = getGroupByPrefix(file.prefix)
     const renderedContent = file.content
       ? String(await marked.parse(file.content))
-      : '<p style="color:#888">본문 내용이 없습니다.</p>'
+      : '<p style="color:#888">No content available.</p>'
     res.render('detail', { file, group, renderedContent })
   } catch (err) {
     handleError(res, err)
@@ -85,7 +85,8 @@ router.get('/reports/:filename', async (req: Request, res: Response) => {
 router.post('/reports/:filename/approve', (req: Request, res: Response) => {
   try {
     const { filename } = req.params
-    approveReport(filename)
+    const comment = String(req.body.comment ?? '').trim()
+    approveReport(filename, comment || undefined)
     res.redirect(`/reports/${filename}`)
   } catch (err) {
     handleError(res, err)
@@ -103,7 +104,7 @@ router.post('/reports/:filename/reject', async (req: Request, res: Response) => 
       const group = getGroupByPrefix(file.prefix)
       const renderedContent = file.content
         ? String(await marked.parse(file.content))
-        : '<p style="color:#888">본문 내용이 없습니다.</p>'
+        : '<p style="color:#888">No content available.</p>'
       res.render('detail', { file, group, renderedContent })
       return
     }
