@@ -1,12 +1,26 @@
 {
-  "name": "strategic-review-server",
+  "name": "strategic-review-webui",
   "version": "1.0.0",
   "description": "Strategic Review Interactive Web Server",
   "main": "dist/index.js",
+  "bin": {
+    "strategic-review-webui": "dist/cli.js"
+  },
+  "files": [
+    "dist",
+    "views",
+    "public",
+    "README.md"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
   "scripts": {
     "dev": "ts-node src/index.ts",
+    "cli": "ts-node src/cli.ts",
     "build": "tsc",
-    "start": "node dist/index.js"
+    "start": "node dist/index.js",
+    "prepublishOnly": "npm run build"
   },
   "dependencies": {
     "ejs": "^3.1.10",

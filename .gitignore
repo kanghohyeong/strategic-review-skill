@@ -1,5 +1,5 @@
 .claude
-server/node_modules/
-server/dist/
+webui/node_modules/
+webui/dist/
 .strategic/
 .serena/

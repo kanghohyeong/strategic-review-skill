@@ -3,7 +3,7 @@ import path from 'path'
 import matter from 'gray-matter'
 import { ReportFile, ReportGroup, ReportStatus, PaginatedGroups } from './types'
 
-const STRATEGIC_DIR = path.resolve(__dirname, '..', '..', '.strategic')
+const STRATEGIC_DIR = process.env.STRATEGIC_DIR || path.join(process.cwd(), '.strategic')
 const FILENAME_REGEX = /^\d{8}_\d{6}\.v\d+\.md$/
 const PAGE_SIZE = 10
 
