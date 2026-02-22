@@ -44,19 +44,23 @@
     <div class="markdown-body"><%- renderedContent %></div>
 
     <% if (file.status === 'submit') { %>
-    <div class="review-bar">
+    <div class="review-bar" id="review-bar">
       <div class="review-bar-inner">
         <h3>Review</h3>
         <div class="review-actions">
-          <form method="POST" action="/reports/<%= file.filename %>/approve" style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
-            <input type="text" name="comment" placeholder="Approval comment (optional)" style="width:260px;">
-            <button type="submit" class="btn btn-success" onclick="return confirm('Confirm approval?')">Approve</button>
-          </form>
-          <form method="POST" action="/reports/<%= file.filename %>/reject" style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
-            <input type="text" name="comment" placeholder="Enter rejection reason" required style="width:260px;">
-            <button type="submit" class="btn btn-danger">Reject</button>
-          </form>
+          <button type="button" class="btn btn-success" onclick="openReview('approve')">Approve</button>
+          <button type="button" class="btn btn-danger" onclick="openReview('reject')">Reject</button>
         </div>
+      </div>
+      <div class="review-expand" id="review-expand">
+        <form id="review-form" method="POST" action="">
+          <textarea id="review-comment" name="comment" required rows="5"
+            placeholder="Write your review&#10;&#10;Examples:&#10;- Request an alternative strategic option analysis&#10;- Request detailed analysis of the Risk Assessment section&#10;- Request elaboration on the Implementation roadmap&#10;- Adopt Strategic Option A: [brief rationale]&#10;- Reject — insufficient justification in Decision Logic&#10;- Approve with condition: revise Success Criteria metrics"></textarea>
+          <div class="review-expand-actions">
+            <button type="button" class="btn btn-secondary" onclick="closeReview()">Cancel</button>
+            <button type="submit" id="review-submit-btn" class="btn btn-success">Confirm</button>
+          </div>
+        </form>
       </div>
     </div>
     <script>document.body.classList.add('body-has-review-bar');</script>
@@ -72,6 +76,52 @@
         setTimeout(function() { btn.textContent = original; }, 2000);
       });
     }
+
+    var pendingAction = null;
+    var approveUrl = '<%= "/reports/" + file.filename + "/approve" %>';
+    var rejectUrl  = '<%= "/reports/" + file.filename + "/reject" %>';
+
+    function openReview(action) {
+      pendingAction = action;
+      var form = document.getElementById('review-form');
+      var submitBtn = document.getElementById('review-submit-btn');
+      if (action === 'approve') {
+        form.action = approveUrl;
+        submitBtn.textContent = 'Confirm Approve';
+        submitBtn.className = 'btn btn-success';
+      } else {
+        form.action = rejectUrl;
+        submitBtn.textContent = 'Confirm Reject';
+        submitBtn.className = 'btn btn-danger';
+      }
+      document.getElementById('review-bar').classList.add('expanded');
+      document.body.classList.add('review-expanded');
+      document.getElementById('review-comment').focus();
+    }
+
+    function closeReview() {
+      document.getElementById('review-bar').classList.remove('expanded');
+      document.body.classList.remove('review-expanded');
+      document.getElementById('review-comment').value = '';
+      pendingAction = null;
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+      var form = document.getElementById('review-form');
+      if (form) {
+        form.addEventListener('submit', function(e) {
+          var comment = document.getElementById('review-comment').value.trim();
+          if (!comment) {
+            e.preventDefault();
+            document.getElementById('review-comment').focus();
+          }
+        });
+      }
+
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') closeReview();
+      });
+    });
     </script>
 
 <%- include('layouts/foot') %>

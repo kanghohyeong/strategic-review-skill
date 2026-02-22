@@ -82,11 +82,22 @@ router.get('/reports/:filename', async (req: Request, res: Response) => {
 })
 
 // POST /reports/:filename/approve — 승인
-router.post('/reports/:filename/approve', (req: Request, res: Response) => {
+router.post('/reports/:filename/approve', async (req: Request, res: Response) => {
   try {
     const { filename } = req.params
     const comment = String(req.body.comment ?? '').trim()
-    approveReport(filename, comment || undefined)
+
+    if (!comment) {
+      const file = getReportByFilename(filename)
+      const group = getGroupByPrefix(file.prefix)
+      const renderedContent = file.content
+        ? String(await marked.parse(file.content))
+        : '<p style="color:#888">No content available.</p>'
+      res.render('detail', { file, group, renderedContent })
+      return
+    }
+
+    approveReport(filename, comment)
     res.redirect(`/reports/${filename}`)
   } catch (err) {
     handleError(res, err)

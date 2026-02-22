@@ -93,8 +93,15 @@ input[type=text]:focus, textarea:focus { outline: none; border-color: #0066cc; b
 .btn-copy { background: #3a3a5c; color: #aab4ff; border: 1px solid #5555aa; border-radius: 4px; padding: 4px 12px; font-size: 0.82rem; cursor: pointer; white-space: nowrap; }
 .btn-copy:hover { background: #4a4a7c; }
 
-.review-bar { position: fixed; bottom: 0; left: 0; right: 0; background: #fff; border-top: 2px solid #e0e0e0; box-shadow: 0 -2px 12px rgba(0,0,0,0.08); z-index: 100; }
+.review-bar { position: fixed; bottom: 0; left: 0; right: 0; background: #fff; border-top: 2px solid #e0e0e0; box-shadow: 0 -2px 12px rgba(0,0,0,0.08); z-index: 100; max-height: 72px; overflow: hidden; transition: max-height 0.35s ease; }
+.review-bar.expanded { max-height: 320px; }
 .review-bar-inner { max-width: 960px; margin: 0 auto; padding: 12px 16px; display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
 .review-bar-inner h3 { font-size: 0.95rem; color: #444; white-space: nowrap; margin-right: 4px; }
 .review-actions { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; flex: 1; }
 .body-has-review-bar { padding-bottom: 90px; }
+.body-has-review-bar.review-expanded { padding-bottom: 340px; }
+.review-expand { max-width: 960px; margin: 0 auto; padding: 0 16px 16px; opacity: 0; transition: opacity 0.2s ease 0.1s; }
+.review-bar.expanded .review-expand { opacity: 1; }
+.review-expand textarea { width: 100%; min-height: 130px; resize: vertical; padding: 10px 12px; border: 1px solid #ccc; border-radius: 6px; font-size: 0.9rem; font-family: inherit; line-height: 1.5; white-space: pre-wrap; }
+.review-expand textarea:focus { outline: none; border-color: #0066cc; box-shadow: 0 0 0 2px rgba(0,102,204,0.15); }
+.review-expand-actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 8px; }
