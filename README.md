@@ -42,18 +42,20 @@
 
 ### only skill (필수)
 ```
-npx skills xxxx
+npx skills add https://github.com/kanghohyeong/strategic-review-skill --skill strategic-review
 ```
 
 ### browser interface (optional)
 ```
 # 인터페이스 통합 스킬 설치
-npx skills xxxxx
+npx skills add https://github.com/kanghohyeong/strategic-review-skill --skill strategic-review-interactive
+```
 
+```
 # 브라우저 인터페이스 실행
 npx -y strategic-review-webui -- --port 3131
 ``` 
-브라우저 인터페이스 실행 명령어를 입력하면 로컬 호스트로 서버를 실행하며 해당 경로에서 작업할 수 있습니다.
+브라우저 인터페이스 실행 명령어를 입력하면 로컬 호스트로 서버를 실행하며 해당 경로에서 GUI 기반으로 전략 검토를 진행할 수 있습니다.
 
 
 ## 가이드
