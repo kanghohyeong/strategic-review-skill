@@ -29,7 +29,9 @@ disable-model-invocation: true
 * **approve** : 사용자에게 승인된 결과를 요약해서 보여주고, 작업을 시작할 준비가 되었음을 알립니다.
   - `interactions/approve.md` 의 지침을 따릅니다.
 
-* **reject** : 보고서를 다시 작성합니다. 
-  - `interactions/reject.md` 의 지침을 따릅니다.
+* **reject** : 사용자에게 반려된 이유를 요약해서 보여줍니다.
+
+* **revision** : 보고서를 재작성합니다. 
+  - `interactions/revision.md` 의 지침을 따릅니다.
 
 * **그 외** : 사용자에게 알 수 없는 상태임을 알리고, 보고서 상태를 확인하도록 안내합니다.

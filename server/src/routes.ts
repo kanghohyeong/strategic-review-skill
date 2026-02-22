@@ -108,8 +108,8 @@ router.post('/reports/:filename/reject', async (req: Request, res: Response) => 
       return
     }
 
-    rejectReport(filename, comment)
-    res.redirect(`/reports/${filename}`)
+    const newFilename = rejectReport(filename, comment)
+    res.redirect(`/reports/${newFilename}`)
   } catch (err) {
     handleError(res, err)
   }

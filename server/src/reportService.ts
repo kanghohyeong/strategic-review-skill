@@ -155,7 +155,7 @@ export function approveReport(filename: string): void {
   fs.writeFileSync(filePath, updated, 'utf-8')
 }
 
-export function rejectReport(filename: string, comment: string): void {
+export function rejectReport(filename: string, comment: string): string {
   if (!isValidFilename(filename)) throw new Error('Invalid filename')
 
   const filePath = path.join(STRATEGIC_DIR, filename)
@@ -167,4 +167,18 @@ export function rejectReport(filename: string, comment: string): void {
 
   const updated = matter.stringify(parsed.content, parsed.data)
   fs.writeFileSync(filePath, updated, 'utf-8')
+
+  const { prefix, version } = parseFilename(filename)
+  const newFilename = `${prefix}.v${version + 1}.md`
+  const newFilePath = path.join(STRATEGIC_DIR, newFilename)
+
+  const newFrontmatter = {
+    name: String(parsed.data.name ?? ''),
+    objective: String(parsed.data.objective ?? ''),
+    constraints: String(parsed.data.constraints ?? ''),
+    status: 'revision' as ReportStatus,
+  }
+  fs.writeFileSync(newFilePath, matter.stringify('', newFrontmatter), 'utf-8')
+
+  return newFilename
 }

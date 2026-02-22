@@ -1,4 +1,4 @@
 <%
-  const STATUS_LABEL = { init: '초안', submit: '검토 대기', approve: '승인', reject: '반려' }
-  const STATUS_CLASS = { init: 'badge-init', submit: 'badge-submit', approve: 'badge-approve', reject: 'badge-reject' }
+  const STATUS_LABEL = { init: '초안', submit: '검토 대기', approve: '승인', reject: '반려', revision: '재검토 대기' }
+  const STATUS_CLASS = { init: 'badge-init', submit: 'badge-submit', approve: 'badge-approve', reject: 'badge-reject', revision: 'badge-revision' }
 %><span class="badge <%= STATUS_CLASS[status] %>"><%= STATUS_LABEL[status] %></span>

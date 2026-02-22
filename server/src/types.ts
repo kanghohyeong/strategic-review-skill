@@ -1,4 +1,4 @@
-export type ReportStatus = 'init' | 'submit' | 'approve' | 'reject'
+export type ReportStatus = 'init' | 'submit' | 'approve' | 'reject' | 'revision'
 
 export interface ReportFile {
   filename: string
