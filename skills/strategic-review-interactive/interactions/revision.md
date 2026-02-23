@@ -1,22 +1,22 @@
-# revisioin 상태 처리 가이드
+# revision Status Handling Guide
 
 ## instructions
 
-### Step 1: 보고서 전체 이력 확인
+### Step 1: Check Full Report History
 
-* 현재 처리 중인 보고서의 모든 이전 버전 보고서를 확인합니다.
-  - 버전 규칙은 파일명을 통해 구분됩니다. `{보고서명}.{버전}.md`
+* Review all previous versions of the report currently being processed.
+  - Version rules are distinguished by filename: `{report-name}.{version}.md`
 
-### Step 2: 검토 의견 항목 수집
+### Step 2: Collect Review Comments
 
-* 직전 버전 보고서에 명시된 검토 의견을 확인합니다.
-  - 검토의견은 frontmatter 로 작성되어 있습니다.
+* Review the comments specified in the most recent version of the report.
+  - Review comments are written as frontmatter.
 
-### Step 3: 보고서 작성
+### Step 3: Write Report
 
- * `strategic-review` skill 을 사용하여 검토 의견이 반영된 보고서를 작성합니다.
+ * Use the `strategic-review` skill to write a report that incorporates the review comments.
 
-### Step 4: 보고서 저장
+### Step 4: Save Report
 
-* 현재 처리 중인 파일에 보고서 내용을 첨부하고 저장합니다.
-* frontmatter 의 status 를 submit 으로 갱신합니다.
+* Attach the report content to the current file and save it.
+* Update the frontmatter status to 'submit'.

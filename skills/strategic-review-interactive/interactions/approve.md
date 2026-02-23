@@ -1,15 +1,15 @@
-# approve 상태 처리 가이드
+# approve Status Handling Guide
 
 ## instructions
 
-### Step 1: 보고서 전체 이력 확인
+### Step 1: Check Full Report History
 
-* 현재 처리 중인 보고서의 모든 이전 버전 보고서를 확인합니다.
-  - 버전 규칙은 파일명을 통해 구분됩니다. `{보고서명}.{버전}.md`
+* Review all previous versions of the report currently being processed.
+  - Version rules are distinguished by filename: `{report-name}.{version}.md`
 
-### Step 2: 승인 항목 수집
+### Step 2: Collect Approved Items
 
-* 각 보고서에서 승인된 항목들을 수집합니다. 별도 의견이 없으면 권고안으로 승인한 것으로 간주합니다.
+* Collect approved items from each report. If there are no separate comments, the recommendation is considered approved as-is.
 
-### Step 3: 내용 요약 및 정리
-* 수집된 승인 항목들을 정리하여 사용자에게 보고합니다.
+### Step 3: Summarize and Organize Content
+* Organize the collected approved items and report them to the user.

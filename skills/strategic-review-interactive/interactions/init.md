@@ -1,17 +1,17 @@
-# init 상태 처리 가이드
+# init Status Handling Guide
 
 ## instructions
 
-### Step 1: 목표와 제약조건 확인
+### Step 1: Confirm Goals and Constraints
 
-* 초기 문서에 명시된 목표와 제약조건을 확인합니다.
-* 목표와 제약조건이 존재하지 않는다면 사용자에게 오류 메시지를 반환합니다.
+* Confirm the goals and constraints specified in the initial document.
+* If goals and constraints do not exist, return an error message to the user.
 
-### Step 2: 보고서 작성
+### Step 2: Write Report
 
-* `strategic-review` skill 을 사용하여 보고서를 작성합니다.
+* Use the `strategic-review` skill to write the report.
 
-### Step 3: 보고서 저장
+### Step 3: Save Report
 
-* 초기 문서에 보고서 내용을 첨부하고 저장합니다.
-* frontmatter 의 status 를 'submit' 으로 갱신합니다.
+* Attach the report content to the initial document and save it.
+* Update the frontmatter status to 'submit'.
