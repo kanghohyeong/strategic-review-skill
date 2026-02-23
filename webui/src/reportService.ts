@@ -186,3 +186,8 @@ export function rejectReport(filename: string, comment: string): string {
 
   return newFilename
 }
+
+export function getStrategicRelDir(): string {
+  const rel = path.relative(process.cwd(), STRATEGIC_DIR)
+  return rel.startsWith('..') ? STRATEGIC_DIR : rel
+}

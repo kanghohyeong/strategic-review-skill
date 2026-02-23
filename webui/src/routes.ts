@@ -7,6 +7,7 @@ import {
   createReport,
   approveReport,
   rejectReport,
+  getStrategicRelDir,
 } from './reportService'
 
 export const router = Router()
@@ -75,7 +76,7 @@ router.get('/reports/:filename', async (req: Request, res: Response) => {
     const renderedContent = file.content
       ? String(await marked.parse(file.content))
       : '<p style="color:#888">No content available.</p>'
-    res.render('detail', { file, group, renderedContent })
+    res.render('detail', { file, group, renderedContent, strategicDir: getStrategicRelDir() })
   } catch (err) {
     handleError(res, err)
   }
@@ -93,7 +94,7 @@ router.post('/reports/:filename/approve', async (req: Request, res: Response) =>
       const renderedContent = file.content
         ? String(await marked.parse(file.content))
         : '<p style="color:#888">No content available.</p>'
-      res.render('detail', { file, group, renderedContent })
+      res.render('detail', { file, group, renderedContent, strategicDir: getStrategicRelDir() })
       return
     }
 
@@ -116,7 +117,7 @@ router.post('/reports/:filename/reject', async (req: Request, res: Response) => 
       const renderedContent = file.content
         ? String(await marked.parse(file.content))
         : '<p style="color:#888">No content available.</p>'
-      res.render('detail', { file, group, renderedContent })
+      res.render('detail', { file, group, renderedContent, strategicDir: getStrategicRelDir() })
       return
     }
 
